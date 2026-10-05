@@ -1,27 +1,24 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { pageSizes, type PageSize } from "@/lib/invoices";
+import type { ReactNode } from "react";
+import { useInvoicePagination } from "@/hooks/use-invoice-pagination";
+import { pageSizes } from "@/lib/invoices";
 
 export function InvoicePagination<T>({
   items,
   children,
 }: {
-  items: T[];
+  items: readonly T[];
   children: (rows: T[]) => ReactNode;
 }) {
-  const [pageSize, setPageSize] = useState<PageSize>(25);
-  const [page, setPage] = useState(1);
-
-  const pageCount = Math.max(1, Math.ceil(items.length / pageSize));
-  const currentPage = Math.min(page, pageCount);
-  const start = (currentPage - 1) * pageSize;
-  const rows = items.slice(start, start + pageSize);
-
-  function selectPageSize(next: PageSize) {
-    setPageSize(next);
-    setPage(1);
-  }
+  const {
+    pageSize,
+    rows,
+    currentPage,
+    pageCount,
+    selectPageSize,
+    goToPage,
+  } = useInvoicePagination(items);
 
   return (
     <>
@@ -31,9 +28,7 @@ export function InvoicePagination<T>({
           Show by
           <select
             value={pageSize}
-            onChange={(event) =>
-              selectPageSize(Number(event.target.value) as PageSize)
-            }
+            onChange={(event) => selectPageSize(Number(event.target.value))}
             className="rounded border border-zinc-200 bg-white px-2 py-1 text-xs text-ink"
           >
             {pageSizes.map((size) => (
@@ -49,7 +44,7 @@ export function InvoicePagination<T>({
             type="button"
             aria-label="Previous page"
             disabled={currentPage === 1}
-            onClick={() => setPage(currentPage - 1)}
+            onClick={() => goToPage(currentPage - 1)}
             className="px-1 enabled:text-ink disabled:opacity-30"
           >
             ‹
@@ -62,7 +57,7 @@ export function InvoicePagination<T>({
             type="button"
             aria-label="Next page"
             disabled={currentPage === pageCount}
-            onClick={() => setPage(currentPage + 1)}
+            onClick={() => goToPage(currentPage + 1)}
             className="px-1 enabled:text-ink disabled:opacity-30"
           >
             ›
