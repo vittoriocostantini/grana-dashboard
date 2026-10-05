@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { FilterSelect } from "@/components/ui/filter-select";
+import { FilterSelect } from "@/components/dashboard/utils/filter-select";
 import { summary } from "@/lib/invoices";
 
 export function Header() {

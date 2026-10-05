@@ -33,24 +33,36 @@ const filters = [
   },
 ] as const;
 
+type FilterId = (typeof filters)[number]["id"];
+
+type FilterValues = {
+  period: Period;
+  account: string;
+  industry: string;
+  state: string;
+};
+// verifica que el valor sea uno de los periodos validos
+function isPeriod(value: string): value is Period {
+  return periodOptions.some((option) => option.value === value);
+}
+
 export function FilterSelect() {
-  const [period, setPeriod] = useState<Period>("7d");
-  const [account, setAccount] = useState("all");
-  const [industry, setIndustry] = useState("all");
-  const [stateName, setStateName] = useState("all");
-
-  const values = {
-    period,
-    account,
-    industry,
-    state: stateName,
-  };
-
-  function updateFilter(id: (typeof filters)[number]["id"], value: string) {
-    if (id === "period") setPeriod(value as Period);
-    if (id === "account") setAccount(value);
-    if (id === "industry") setIndustry(value);
-    if (id === "state") setStateName(value);
+  const [values, setValues] = useState<FilterValues>({
+    period: "7d",
+    account: "all",
+    industry: "all",
+    state: "all",
+  });
+// si id es period, verifica que el valor sea uno de los periodos validos
+// si no, evita que se actualice el valor
+  function updateFilter(id: FilterId, value: string) {
+    if (id === "period") {
+      if (!isPeriod(value)) return;
+      setValues((current) => ({ ...current, period: value }));
+      return;
+    }
+// setValues actualiza el valor del filtro
+    setValues((current) => ({ ...current, [id]: value }));
   }
 
   return (
