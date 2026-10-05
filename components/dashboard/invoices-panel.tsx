@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { InvoiceFilters } from "@/components/dashboard/invoice-filters";
+import { InvoiceFilters } from "@/components/ui/invoice-filters";
 import { InvoiceMetrics } from "@/components/dashboard/invoice-metrics";
 import { InvoicePagination } from "@/components/dashboard/invoice-pagination";
 import { TransactionsTable } from "@/components/dashboard/transactions-table";
@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { invoices, type InvoiceFilter } from "@/lib/invoices";
 
 export function InvoicesPanel() {
-  const [filter, setFilter] = useState<InvoiceFilter>("withdraw");
+  const [filter, setFilter] = useState<InvoiceFilter>("all");
 
   const filtered = useMemo(
     () =>
