@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/components/auth/auth-provider";
 import { ButtonMember } from "@/components/ui/button-member";
 import { SidebarButton } from "@/components/ui/sidebar-button";
 import { MemberPopUp } from "@/components/ui/member-pop-up";
@@ -8,20 +9,25 @@ import { cn } from "@/lib/cn";
 
 export function Sidebar() {
   const [memberOpen, setMemberOpen] = useState(false);
+  const { logout } = useAuth();
 
   return (
-    <aside className="relative z-40 flex items-center justify-between overflow-visible px-3 py-2 lg:w-15 lg:flex-col lg:items-center lg:justify-between lg:px-0 lg:py-4">
+    <aside className="relative z-40 flex items-center justify-between overflow-visible px-3 py-2 lg:w-15 lg:flex-col lg:items-center lg:justify-between lg:px-0 lg:py-4 border-r border-[#EAEAEA]">
       <div className="flex items-center gap-4 lg:flex-col lg:gap-5">
-        <span className="relative size-9 overflow-hidden rounded-full bg-[#f0c7b0]">
-          <img src="/avatar-test.png" alt="Avatar" />
-          <span className="sr-only">Barbara</span>
-        </span>
-        <SidebarButton logo="/icons/home-logo.svg" route="/" label="Home" />
-        <SidebarButton logo="/icons/help-logo.svg" route="/help" label="Help" />
+        <div className="relative overflow-hidden rounded-full bg-[#879abc] p-2">
+          <img src="/avatar.svg" alt="Avatar" className="size-6" />
+        </div>
+        <SidebarButton logo="/icons/home-logo.svg" route="/home" label="Home" />
+        <SidebarButton
+          logo="/icons/help-logo.svg"
+          route="https://www.cs.virginia.edu/~evans/cs216/guides/x86.html"
+          label="Help"
+        />
         <SidebarButton
           logo="/icons/logout-logo.svg"
           route="/logout"
           label="logout"
+          onPress={logout}
         />
       </div>
 

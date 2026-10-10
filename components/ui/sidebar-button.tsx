@@ -4,52 +4,62 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 
-export interface SidebarButtonProps {
-  logo: string;
-  route: string;
-  label: string;
-  active?: boolean;
-  variant?: "nav" | "solid" | "plain";
-}
-
-const variants = {
-  nav: "relative flex h-10 w-10 shrink-0 flex-col items-center justify-center gap-1 rounded-lg text-ink transition-colors duration-200 hover:bg-[#D4D4D4]",
-  navActive: "bg-[#D4D4D4]",
-  solid:
-    "grid size-8 place-items-center rounded-lg bg-black cursor-pointer hover:scale-105 transition-all duration-300",
-  plain:
-    "grid size-7 place-items-center rounded-full cursor-pointer hover:scale-105 transition-all duration-300",
-} as const;
-
 export function SidebarButton({
   logo,
   route,
   label,
   active,
-  variant = "nav",
-}: SidebarButtonProps) {
+  onPress,
+}: {
+  logo: string;
+  route: string;
+  label: string;
+  active?: boolean;
+  onPress?: () => void;
+}) {
   const pathname = usePathname();
-  const isActive = active ?? pathname === route;
-  const iconOnly = variant !== "nav";
+  const isExternal = route.startsWith("http://") || route.startsWith("https://");
+  const isActive = active ?? (!isExternal && pathname === route);
+  const className = cn(
+    "relative flex h-10 w-10 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg text-ink transition-colors duration-200 hover:bg-[#E1E1E1]",
+    isActive && "bg-[#E1E1E1]",
+  );
+  const content = (
+    <>
+      <img src={logo} alt={label} className="size-4" />
+      <span className="text-[10px] leading-none">{label}</span>
+    </>
+  );
+
+  if (onPress) {
+    return (
+      <button type="button" onClick={onPress} aria-label={label} className={className}>
+        {content}
+      </button>
+    );
+  }
+
+  if (isExternal) {
+    return (
+      <a
+        href={route}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        className={className}
+      >
+        {content}
+      </a>
+    );
+  }
 
   return (
     <Link
       href={route}
       aria-current={isActive ? "page" : undefined}
-      aria-label={iconOnly ? label : undefined}
-      className={cn(
-        variants[variant],
-        variant === "nav" && isActive && variants.navActive,
-      )}
+      className={className}
     >
-      <img
-        src={logo}
-        alt={label}
-        className={variant === "plain" ? undefined : "size-4"}
-      />
-      {variant === "nav" ? (
-        <span className="text-[10px] leading-none">{label}</span>
-      ) : null}
+      {content}
     </Link>
   );
 }
