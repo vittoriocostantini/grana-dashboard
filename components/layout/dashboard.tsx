@@ -1,17 +1,24 @@
 import { SectionCharts } from "@/components/dashboard/section-charts";
-import { Header } from "@/components/layout/header";
+import { UserFilterSync } from "@/components/dashboard/utils/user-filter-sync";
 import { InvoicesPanel } from "@/components/dashboard/invoices-panel";
+import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
+import type { DashboardData } from "@/lib/dashboard";
 
-export function Dashboard() {
+export function Dashboard({ data }: { data: DashboardData }) {
   return (
-    <div className="flex min-h-dvh flex-col lg:flex-row">
+    <div className="flex min-h-dvh flex-col lg:flex-row bg-white">
+      <UserFilterSync />
       <Sidebar />
-      <div className="m-2 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-[20px] sm:m-3 lg:my-3 lg:mr-3 lg:ml-0 lg:h-[calc(100dvh-1.5rem)]">
-        <Header />
-        <div className="flex min-h-0 flex-1 flex-col lg:flex-row rounded-lg bg-white">
-          <SectionCharts />
-          <InvoicesPanel />
+      <div className=" flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:h-[calc(100dvh-1.5rem)]">
+        <Header data={data} />
+        <div className="flex min-h-0 flex-1 flex-col lg:flex-row rounded-lg ">
+          <SectionCharts
+            industries={data.industries}
+            volume={data.volume}
+            period={data.filters.period}
+          />
+          <InvoicesPanel data={data} />
         </div>
       </div>
     </div>

@@ -1,25 +1,30 @@
-import { Card } from "@/components/ui/card";
-import { FilterSelect } from "@/components/dashboard/utils/filter-select";
-import { summary } from "@/lib/invoices";
+"use client";
 
-export function Header() {
+import { useAuth } from "@/components/auth/auth-provider";
+import { FilterSelect } from "@/components/dashboard/utils/filter-select";
+import { Card } from "@/components/ui/card";
+import type { DashboardData } from "@/lib/dashboard";
+
+export function Header({ data }: { data: DashboardData }) {
+  const { user } = useAuth();
+
   return (
-    <header className="flex shrink-0 flex-col gap-5 px-5 pt-5 pb-5 sm:px-6 sm:pt-6 rounded-lg  mb-1">
-      <h1 className="text-3xl font-semibold tracking-tight text-ink">
-        Good morning, Barbara <span aria-hidden>👋</span>
+    <header className="flex shrink-0 flex-col gap-5 mb-5 border-t border-b border-[#EAEAEA]">
+      <h1 className="text-3xl font-semibold tracking-tight text-ink p-2">
+        Welcome back, {user?.name} <span aria-hidden>👋</span>
       </h1>
 
       <Card plain>
-        <div className="flex items-center justify-between gap-6">
-          <div className="shrink-0">
+        <div className="flex items-center justify-between gap-6 border-t border-[#EAEAEA] p-2">
+          <div className="shrink-0 p-2">
             <Card.Label size="md">Total earning</Card.Label>
 
             <Card.Value size="xl" className="mt-1">
-              {summary.earning}
+              {data.summary.earning}
             </Card.Value>
           </div>
 
-          <FilterSelect />
+          <FilterSelect values={data.filters} options={data.options} />
         </div>
       </Card>
     </header>

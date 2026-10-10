@@ -1,42 +1,46 @@
 import { cn } from "@/lib/cn";
-import { summary } from "@/lib/invoices";
+import type { DashboardData } from "@/lib/dashboard";
 
-const metrics = [
+const metricLayout = [
   {
     label: "Income",
     subtitle: "Total Income",
-    value: summary.income,
     icon: "/icons/income-logo.svg",
     color: "text-[#000000]",
+    key: "income",
   },
   {
     label: "Expense",
     subtitle: "Total Expense",
-    value: summary.expense,
     icon: "/icons/expense-logo.svg",
     color: "text-[#000000]",
     flip: true,
+    key: "expense",
   },
   {
     label: "Pending Transactions",
-    value: summary.pending,
     icon: "/icons/pending-logo.svg",
     color: "text-[#000000]",
+    key: "pending",
   },
 ] as const;
 
-export function InvoiceMetrics() {
+export function InvoiceMetrics({
+  summary,
+}: {
+  summary: DashboardData["summary"];
+}) {
   return (
-    <div className="mt-4 flex shrink-0 flex-col rounded-[10px] border border-[#b7b7b7]  py-4 sm:flex-row sm:items-stretch sm:py-5 ">
-      {metrics.map((metric, index) => (
+    <div className="mt-4 flex shrink-0 flex-col sm:flex-row sm:items-stretch  gap-4">
+      {metricLayout.map((metric, index) => (
         <div
           key={metric.label}
-          className="flex min-w-0 flex-1 flex-col sm:flex-row"
+          className="flex min-w-0 flex-1 flex-col sm:flex-row border border-[#EAEAEA] p-4 rounded-3xl"
         >
           {index > 0 && (
             <span
               aria-hidden
-              className="mx-5 my-3 h-px bg-[#e6e6e6] sm:mx-0 sm:my-1 sm:h-auto sm:w-px"
+              className="mx-5 my-3 h-px  sm:mx-0 sm:my-1 sm:h-auto sm:w-px"
             />
           )}
 
@@ -62,7 +66,7 @@ export function InvoiceMetrics() {
               <p className="text-[12px] text-[#8a8a8a]">{metric.subtitle}</p>
             )}
             <p className="text-[1.65rem] leading-none font-bold tracking-tight text-ink tabular-nums">
-              {metric.value}
+              {summary[metric.key]}
             </p>
           </div>
         </div>

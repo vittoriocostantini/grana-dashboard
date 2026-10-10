@@ -1,5 +1,3 @@
-import { Dashboard } from "@/components/layout/dashboard";
-
-export default function Home() {
-  return <Dashboard />;
+export default function IndexPage() {
+  return null;
 }

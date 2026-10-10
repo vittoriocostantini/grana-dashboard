@@ -1,4 +1,4 @@
-import type { Invoice } from "@/lib/invoices";
+import type { InvoiceRow } from "@/lib/dashboard";
 
 const columns = [
   "Account",
@@ -11,7 +11,7 @@ const columns = [
 ] as const;
 
 export interface TransactionsTableProps {
-  rows: Invoice[];
+  rows: InvoiceRow[];
 }
 
 export function TransactionsTable({ rows }: TransactionsTableProps) {

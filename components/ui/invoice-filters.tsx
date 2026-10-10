@@ -1,5 +1,8 @@
+"use client";
+
 import { cn } from "@/lib/cn";
-import type { InvoiceFilter } from "@/lib/invoices";
+import type { InvoiceFilter } from "@/lib/dashboard-filters";
+import { useDashboardQuery } from "@/lib/use-dashboard-query";
 
 const filters: Array<{ id: InvoiceFilter; label: string }> = [
   { id: "all", label: "All" },
@@ -7,17 +10,14 @@ const filters: Array<{ id: InvoiceFilter; label: string }> = [
   { id: "deposit", label: "Deposit" },
 ];
 
-export function InvoiceFilters({
-  value,
-  onChange,
-}: {
-  value: InvoiceFilter;
-  onChange: (next: InvoiceFilter) => void;
-}) {
+export function InvoiceFilters({ value }: { value: InvoiceFilter }) {
+  const { setFilters, pending } = useDashboardQuery();
+
   return (
     <div
       role="tablist"
       aria-label="Invoice type"
+      aria-busy={pending}
       className="mt-5 flex shrink-0 items-center gap-1 text-sm"
     >
       {filters.map((item) => {
@@ -28,7 +28,7 @@ export function InvoiceFilters({
             type="button"
             role="tab"
             aria-selected={selected}
-            onClick={() => onChange(item.id)}
+            onClick={() => setFilters({ type: item.id })}
             className={cn(
               "rounded-md px-3 py-1",
               selected

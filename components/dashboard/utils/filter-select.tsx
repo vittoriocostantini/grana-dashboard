@@ -1,81 +1,78 @@
 "use client";
 
-import { useState } from "react";
 import { SelectField } from "@/components/ui/button-select-field";
 import {
-  accountOptions,
-  industryOptions,
   periodOptions,
-  stateOptions,
+  type DashboardFilters,
   type Period,
-} from "@/lib/invoices";
+} from "@/lib/dashboard-filters";
+import type { FilterOption } from "@/lib/dashboard";
+import { useDashboardQuery } from "@/lib/use-dashboard-query";
+import { defaultScopeFilters, scopeFiltersEqual } from "@/lib/user-filters";
 
-const filters = [
-  {
-    id: "period",
-    label: "Period",
-    options: periodOptions,
-  },
-  {
-    id: "account",
-    label: "Account",
-    options: accountOptions,
-  },
-  {
-    id: "industry",
-    label: "Industry",
-    options: industryOptions,
-  },
-  {
-    id: "state",
-    label: "State",
-    options: stateOptions,
-  },
+const fields = [
+  { id: "period", label: "Period" },
+  { id: "account", label: "Account" },
+  { id: "industry", label: "Industry" },
+  { id: "state", label: "State" },
 ] as const;
 
-type FilterId = (typeof filters)[number]["id"];
+type FilterId = (typeof fields)[number]["id"];
 
-type FilterValues = {
-  period: Period;
-  account: string;
-  industry: string;
-  state: string;
-};
-// verifica que el valor sea uno de los periodos validos
 function isPeriod(value: string): value is Period {
   return periodOptions.some((option) => option.value === value);
 }
 
-export function FilterSelect() {
-  const [values, setValues] = useState<FilterValues>({
-    period: "7d",
-    account: "all",
-    industry: "all",
-    state: "all",
-  });
-// si id es period, verifica que el valor sea uno de los periodos validos
-// si no, evita que se actualice el valor
+export function FilterSelect({
+  values,
+  options,
+}: {
+  values: Pick<DashboardFilters, FilterId>;
+  options: {
+    accounts: FilterOption[];
+    industries: FilterOption[];
+    states: FilterOption[];
+  };
+}) {
+  const { setFilters, pending } = useDashboardQuery();
+  const choices = {
+    period: periodOptions,
+    account: options.accounts,
+    industry: options.industries,
+    state: options.states,
+  };
+
+  const defaults = defaultScopeFilters();
+  const filtersAreDefault = scopeFiltersEqual(values, defaults);
+
   function updateFilter(id: FilterId, value: string) {
-    if (id === "period") {
-      if (!isPeriod(value)) return;
-      setValues((current) => ({ ...current, period: value }));
-      return;
-    }
-// setValues actualiza el valor del filtro
-    setValues((current) => ({ ...current, [id]: value }));
+    if (id === "period" && !isPeriod(value)) return;
+    setFilters({ [id]: value });
+  }
+
+  function resetFilters() {
+    setFilters(defaults);
   }
 
   return (
-    <div className="flex shrink-0 items-center gap-2.5">
-      {filters.map((filter) => (
+    <div className="flex shrink-0 items-center gap-2.5" aria-busy={pending}>
+      {fields.map((field) => (
         <SelectField
-          key={filter.id}
-          label={filter.label}
-          value={values[filter.id]}
-          options={filter.options}
-          onChange={(value) => updateFilter(filter.id, value)}
+          key={field.id}
+          label={field.label}
+          value={values[field.id]}
+          options={choices[field.id]}
+          onChange={(value) => updateFilter(field.id, value)}
         />
       ))}
+      <button
+        type="button"
+        onClick={resetFilters}
+        disabled={filtersAreDefault || pending}
+        className="h-9 cursor-pointer rounded-lg  bg-[#054971] px-3 text-sm text-white hover:border-[#c8c8c8] disabled:cursor-default disabled:opacity-40"
+      >
+        Reset
+      </button>
     </div>
   );
 }
