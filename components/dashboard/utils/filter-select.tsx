@@ -55,7 +55,10 @@ export function FilterSelect({
   }
 
   return (
-    <div className="flex shrink-0 items-center gap-2.5" aria-busy={pending}>
+    <div
+      className="flex min-w-0 flex-wrap items-center gap-2.5 lg:justify-end"
+      aria-busy={pending}
+    >
       {fields.map((field) => (
         <SelectField
           key={field.id}
@@ -69,7 +72,7 @@ export function FilterSelect({
         type="button"
         onClick={resetFilters}
         disabled={filtersAreDefault || pending}
-        className="h-9 cursor-pointer rounded-lg  bg-[#054971] px-3 text-sm text-white hover:border-[#c8c8c8] disabled:cursor-default disabled:opacity-40"
+        className="h-9 shrink-0 cursor-pointer rounded-lg bg-[#054971] px-3 text-sm text-white hover:border-[#c8c8c8] disabled:cursor-default disabled:opacity-40"
       >
         Reset
       </button>
