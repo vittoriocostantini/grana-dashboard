@@ -9,7 +9,7 @@ export function InvoicesPanel({ data }: { data: DashboardData }) {
   return (
     <Card
       plain
-      className="h-full min-h-0   min-w-0 flex-1 overflow-hidden p-2 sm:py-2 px-5 bg-red border border-[#EAEAEA] rounded-3xl"
+      className="h-full min-h-0   min-w-0 flex-1 overflow-hidden p-2 sm:py-2 px-5 bg-red border border-[#EAEAEA] rounded-3xl mx-2"
     >
       <Card.Header className="shrink-0">
         <Card.Title>Invoices</Card.Title>
